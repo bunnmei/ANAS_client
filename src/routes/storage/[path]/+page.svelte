@@ -1,9 +1,14 @@
 <script lang="ts">
   import type { PageData } from './$types';
+
+  import Folder from '$lib/components/Folder.svelte';
+  import type { ANAS_FolderOrFile } from '$lib/types';
+
   export let data: PageData; 
   const  { path } = data;
 
   import { onMount } from 'svelte';
+  let folderData: [ANAS_FolderOrFile];
 
   onMount(async () => {
     console.log("Fetching folder data for path:", path);
@@ -15,14 +20,25 @@
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ path: path }),
+        body: JSON.stringify({ 
+          disk: path,
+          path: "/"
+        }),
       }
     );
     // console.log(res);
-    const folderData = await res.json();
-    console.log(folderData);
+    folderData = await res.json() as [ANAS_FolderOrFile];
+    // console.log(folderData);
   });
 
 </script>
 
 <h1>Path: {path}</h1>
+
+{#each folderData as folderOrFile}
+  {#if folderOrFile}
+    <Folder item={folderOrFile} />
+  {:else}
+    <p>Loading folder data...</p>
+  {/if}
+{/each}
