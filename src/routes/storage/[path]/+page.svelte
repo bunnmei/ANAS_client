@@ -8,6 +8,7 @@
   const  { path } = data;
 
   import { onMount } from 'svelte';
+	import File from '$lib/components/File.svelte';
   let folderData: [ANAS_FolderOrFile];
 
   onMount(async () => {
@@ -28,6 +29,7 @@
     );
     // console.log(res);
     folderData = await res.json() as [ANAS_FolderOrFile];
+    console.log("Received folder data:", folderData);
     // console.log(folderData);
   });
 
@@ -37,7 +39,14 @@
 
 {#each folderData as folderOrFile}
   {#if folderOrFile}
-    <Folder item={folderOrFile} />
+
+    {#if folderOrFile.kind === 'folder'}
+      <Folder item={folderOrFile} />
+    {:else}
+      <File item={folderOrFile} />
+      <!-- <p>File: {folderOrFile.name}</p> -->
+    {/if}
+
   {:else}
     <p>Loading folder data...</p>
   {/if}

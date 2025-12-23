@@ -1,10 +1,36 @@
 <script lang="ts">
   import type { ANAS_FolderOrFile } from '$lib/types';
   export let item: ANAS_FolderOrFile;
+
+  async function fetchFolderContents() {
+    const last = window.location.pathname
+    .replace(/\/$/, "")
+    .split("/")
+    .pop();
+    const apipath = "http://192.168.1.104:8080";
+    const res = await fetch( 
+      `${apipath}/folder`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ 
+          disk: last,
+          path: item.absolutePath
+        }),
+      }
+    );
+    // console.log(res);
+    const folderData = await res.json() as [ANAS_FolderOrFile];
+    console.log("Received folder data:", folderData);
+    // Implement folder opening logic here
+    console.log(`Opening folder: ${item.name}`);
+  }
 </script>
 
 <div class="panel">
-  <div class="open-folder-icon">
+  <div class="open-folder-icon" on:click={fetchFolderContents}>
     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3" 
     ><path d="M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z"/></svg>
   </div>
