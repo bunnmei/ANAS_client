@@ -1,8 +1,17 @@
 <script lang="ts">
   import type { ANAS_FolderOrFile } from '$lib/types';
+  import File from '$lib/components/File.svelte';
   export let item: ANAS_FolderOrFile;
 
+  let folderData: ANAS_FolderOrFile[] = [];
+
   async function fetchFolderContents() {
+    if(item.kind !== 'folder') return;
+    item.open = !item.open;
+    if(folderData.length > 0) {
+      // If already fetched, do not fetch again
+      return;
+    }
     const last = window.location.pathname
     .replace(/\/$/, "")
     .split("/")
@@ -22,7 +31,7 @@
       }
     );
     // console.log(res);
-    const folderData = await res.json() as [ANAS_FolderOrFile];
+    folderData = await res.json() as [ANAS_FolderOrFile];
     console.log("Received folder data:", folderData);
     // Implement folder opening logic here
     console.log(`Opening folder: ${item.name}`);
@@ -39,6 +48,22 @@
     </div>
   <span>{item.name}</span>
 </div>
+{#if (item.kind === 'folder' && folderData.length > 0 && item.open)}
+  {#each folderData as folderOrFile}
+  {#if folderOrFile}
+
+    {#if folderOrFile.kind === 'folder'}
+      <svelte:self item={folderOrFile} />
+    {:else}
+      <File item={folderOrFile} />
+    {/if}
+
+  {:else}
+    <p>Loading folder data...</p>
+  {/if}
+{/each}
+{/if}
+
 
 <style>
   .panel {
