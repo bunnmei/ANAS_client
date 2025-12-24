@@ -38,35 +38,45 @@
   }
 </script>
 
-<div class="panel">
-  <div class="open-folder-icon" on:click={fetchFolderContents}>
-    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3" 
-    ><path d="M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z"/></svg>
-  </div>
-  <div class="folder-icon type-icon">
-      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h240l80 80h320q33 0 56.5 23.5T880-640v400q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H447l-80-80H160v480Zm0 0v-480 480Z"/></svg>
+<div class="panel-top">
+  
+  <div class="panel">
+    <div class="open-folder-icon" on:click={fetchFolderContents}>
+      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3" 
+      ><path d="M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z"/></svg>
     </div>
-  <span>{item.name}</span>
-</div>
-{#if (item.kind === 'folder' && folderData.length > 0 && item.open)}
-  {#each folderData as folderOrFile}
-  {#if folderOrFile}
-
-    {#if folderOrFile.kind === 'folder'}
-      <svelte:self item={folderOrFile} />
-    {:else}
-      <File item={folderOrFile} />
-    {/if}
-
-  {:else}
-    <p>Loading folder data...</p>
+    <div class="folder-icon type-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h240l80 80h320q33 0 56.5 23.5T880-640v400q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H447l-80-80H160v480Zm0 0v-480 480Z"/></svg>
+      </div>
+    <span>{item.name}</span>
+  </div>
+  {#if (item.kind === 'folder' && folderData.length > 0 && item.open)}
+    {#each folderData as folderOrFile}
+      {#if folderOrFile}
+  
+        {#if folderOrFile.kind === 'folder'}
+          <svelte:self item={folderOrFile} />
+        {:else}
+          <File item={folderOrFile} />
+        {/if}
+  
+      {:else}
+        <p>Loading folder data...</p>
+      {/if}
+    {/each}
   {/if}
-{/each}
-{/if}
+
+</div>
 
 
 <style>
+  .panel-top {
+    display: flex;
+    flex-direction: column;
+    margin-left: 8px;
+  }
   .panel {
+    margin-left: 8px;
     display: flex;
     align-items: center;
     width: 300px;
